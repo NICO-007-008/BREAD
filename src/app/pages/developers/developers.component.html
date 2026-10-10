@@ -1,0 +1,99 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>Developers</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="page-content" [scrollY]="true">
+
+  <!-- ── Intro banner ────────────────────────────────────────────────── -->
+  <div style="background: var(--bakery-dark); padding: 36px 24px 32px; position: relative; overflow: hidden;">
+    <!-- decorative circles -->
+    <div style="position: absolute; top: -30px; right: -30px; width: 160px; height: 160px; border-radius: 50%; background: rgba(204, 111, 0,0.10); pointer-events: none;"></div>
+    <div style="position: absolute; bottom: -40px; left: 20px; width: 120px; height: 120px; border-radius: 50%; background: rgba(204, 111, 0,0.07); pointer-events: none;"></div>
+
+    <p style="font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bakery-dark); margin: 0 0 8px;">Meet the Team</p>
+    <h1 style="font-family: 'Inter', sans-serif; font-size: clamp(1.4rem, 3.5vw, 2rem); font-weight: 900; color: var(--bakery-card); margin: 0 0 10px; line-height: 1.15; letter-spacing: -0.02em;">
+      The Minds Behind<br>Knead to Know
+    </h1>
+    <p style="font-family: 'Inter', sans-serif; font-size: 0.85rem; color: rgba(249, 230, 168,0.65); margin: 0; line-height: 1.6; max-width: 340px;">
+      A small, passionate team that built this app from the ground up — one component, one commit at a time.
+    </p>
+  </div>
+
+  <!-- ── Tech stack pills ────────────────────────────────────────────── -->
+  <div style="background: var(--bakery-dark); padding: 14px 20px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+    <span style="font-family: 'Inter', sans-serif; font-size: 0.68rem; font-weight: 600; color: rgba(249, 230, 168,0.5); letter-spacing: 0.06em; text-transform: uppercase; margin-right: 4px; flex-shrink: 0;">Built with</span>
+    @for (s of stack; track s.label) {
+      <span [style.background]="s.bg" [style.color]="s.color" style="font-family: 'Inter', sans-serif; font-size: 0.72rem; font-weight: 700; padding: 4px 10px; border-radius: 20px;" [style.border]="'1px solid ' + s.color + '33'">
+        {{ s.label }}
+      </span>
+    }
+  </div>
+
+  <!-- ── Developer cards ─────────────────────────────────────────────── -->
+  <div style="background: var(--bakery-card); padding: 28px 16px 40px;">
+    <p class="bakery-section-eyebrow">Our Developers</p>
+    <h2 class="bakery-section-title" style="margin-bottom: 20px;">Team Members</h2>
+
+    <ion-grid style="padding: 0;">
+      <ion-row style="align-items: flex-start;">
+        @for (dev of developers; track dev.name) {
+          <ion-col size="12" size-md="6" style="padding: 6px;">
+            <div style="background: var(--bakery-card); border-radius: 18px; padding: 20px; border: 1px solid var(--bakery-card-border); box-shadow: 0 2px 10px rgba(77, 42, 0,0.07); display: flex; gap: 16px; align-items: flex-start;">
+              <!-- avatar -->
+              <div style="flex-shrink: 0;">
+                <img
+                  [src]="dev.avatar"
+                  [alt]="dev.name"
+                  style="width: 64px; height: 64px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 3px var(--bakery-card), 0 0 0 5px var(--bakery-burnt);" (error)="$any($event.target).style.display='none'"
+                >
+              </div>
+
+              <!-- info -->
+              <div style="flex: 1; min-width: 0;">
+                <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 800; color: var(--bakery-dark); margin: 0 0 2px;">
+                  @if (dev.resumeUrl) {
+                    <a
+                      [href]="dev.resumeUrl"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style="color: var(--bakery-dark); text-decoration: none; border-bottom: 2px solid var(--bakery-burnt); padding-bottom: 1px; cursor: pointer;"
+                    >
+                      {{ dev.name }}
+                    </a>
+                  } @else {
+                    {{ dev.name }}
+                  }
+                </p>
+                <p style="font-family: 'Inter', sans-serif; font-size: 0.72rem; font-weight: 600; color: var(--bakery-dark); margin: 0 0 8px; letter-spacing: 0.03em;">{{ dev.role }}</p>
+                <p style="font-family: 'Inter', sans-serif; font-size: 0.8rem; color: var(--bakery-text-secondary); line-height: 1.55; margin: 0 0 12px;">{{ dev.bio }}</p>
+
+                <!-- skill chips -->
+                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                  @for (skill of dev.skills; track skill) {
+                    <span style="background: var(--bakery-base); color: var(--bakery-dark); font-family: 'Inter', sans-serif; font-size: 0.67rem; font-weight: 600; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--bakery-card-border);">
+                      {{ skill }}
+                    </span>
+                  }
+                </div>
+              </div>
+            </div>
+          </ion-col>
+        }
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <!-- ── Footer note ─────────────────────────────────────────────────── -->
+  <div style="background: var(--bakery-base); padding: 24px; border-top: 1px solid var(--bakery-card-border); text-align: center;">
+    <p style="font-family: 'Inter', sans-serif; font-size: 0.85rem; color: var(--bakery-dark); line-height: 1.6; margin: 0;">
+      Built with care for bakery lovers everywhere.<br>
+      <span style="color: var(--bakery-text-muted); font-size: 0.75rem;">
+        Knead to Know v1.0 · © 2026
+      </span>
+    </p>
+  </div>
+
+</ion-content>

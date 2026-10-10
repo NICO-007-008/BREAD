@@ -1,0 +1,92 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>Notifications</ion-title>
+    @if (unreadCount() > 0) {
+      <ion-buttons slot="end">
+        <ion-button (click)="markAllRead()" size="small" style="--padding-end: 12px; font-family: 'Inter', sans-serif; font-size: 0.72rem; font-weight: 700; color: var(--bakery-dark);" [attr.aria-label]="'Mark all as read'">
+          Read all
+        </ion-button>
+      </ion-buttons>
+    }
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="page-content" [scrollY]="true">
+
+  <div style="background: var(--bakery-card); padding: 18px 16px 40px;">
+
+    @if (actionsError) {
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 10px;
+          background: var(--bakery-base);
+          border: 1px solid var(--bakery-card-border);
+          border-radius: 12px;
+          padding: 10px 14px;
+          margin-bottom: 14px;
+        "
+      >
+        <p style="font-family: 'Inter', sans-serif; font-size: 0.78rem; color: var(--bakery-status-cancelled); margin: 0;">Could not update notifications — {{ actionsError }}</p>
+        <ion-button size="small" fill="clear" (click)="actionsError = null" style="--color: var(--bakery-text-secondary); font-size: 0.75rem; margin: 0;">Dismiss</ion-button>
+      </div>
+    }
+
+    @if (errorMessage) {
+      <div style="text-align: center; padding: 40px 20px;">
+        <p style="font-size: 2rem; margin: 0 0 10px;">(!)</p>
+        <p style="font-family: 'Inter', sans-serif; font-weight: 700; color: var(--bakery-dark); margin: 0 0 6px;">Could not load notifications</p>
+        <p style="font-family: 'Inter', sans-serif; font-size: 0.82rem; color: var(--bakery-text-secondary); margin: 0 0 14px;">{{ errorMessage }}</p>
+        <ion-button fill="outline" (click)="refresh()" style="--color: var(--bakery-dark); font-size: 0.8rem;">Try again</ion-button>
+      </div>
+    } @else if (!loaded()) {
+      <div style="text-align: center; padding: 48px 20px;">
+        <div style="width: 34px; height: 34px; border: 3px solid var(--bakery-card-border); border-top-color: var(--bakery-dark); border-radius: 50%; margin: 0 auto 14px; animation: spin 0.8s linear infinite;"></div>
+        <p style="font-family: 'Inter', sans-serif; font-size: 0.85rem; color: var(--bakery-text-secondary); margin: 0;">Loading inbox…</p>
+      </div>
+    } @else if (items().length === 0) {
+      <div style="text-align: center; padding: 48px 20px;">
+        <p style="font-family: 'Inter', sans-serif; font-weight: 700; color: var(--bakery-dark); margin: 0 0 6px;">All caught up</p>
+        <p style="font-family: 'Inter', sans-serif; font-size: 0.85rem; color: var(--bakery-text-secondary); margin: 0;">
+          Order updates, promotions, and studio news will show up here.
+        </p>
+      </div>
+    } @else {
+      @for (item of items(); track item.id) {
+        <div
+          (click)="open(item)"
+          style="
+            background: {{ item.read ? '#fff' : 'var(--bakery-card)' }};
+            border: 1px solid {{ item.read ? 'var(--bakery-card-border)' : 'var(--bakery-card-border)' }};
+            border-radius: 14px;
+            padding: 13px 16px;
+            margin-bottom: 9px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            cursor: pointer;
+            box-shadow: 0 1px 4px rgba(77, 42, 0,0.05);
+          "
+        >
+          <div class="notif-icon-circle">
+            <ion-icon [icon]="iconFor(item.type)" aria-hidden="true"></ion-icon>
+          </div>
+          <div style="flex: 1; min-width: 0;">
+            <p style="font-family: 'Inter', sans-serif; font-size: 0.84rem; font-weight: {{ item.read ? '600' : '800' }}; color: var(--bakery-dark); margin: 0;">
+              {{ item.title }}
+              @if (!item.read) {
+                <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--bakery-burnt); margin-left: 6px; vertical-align: middle;"></span>
+              }
+            </p>
+            <p style="font-family: 'Inter', sans-serif; font-size: 0.76rem; color: var(--bakery-text-secondary); margin: 3px 0 0; line-height: 1.45;">{{ item.body }}</p>
+            <p style="font-family: 'Inter', sans-serif; font-size: 0.64rem; color: var(--bakery-text-muted); margin: 5px 0 0;">{{ formatDate(item.created_at) }}</p>
+          </div>
+        </div>
+      }
+    }
+  </div>
+
+</ion-content>

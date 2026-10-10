@@ -1,0 +1,154 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>Promotions &amp; Offers</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="page-content" [scrollY]="true">
+
+  <!-- ── Hero banner ─────────────────────────────────────────────────── -->
+  <div style="position: relative; overflow: hidden; min-height: 180px; background: var(--bakery-dark);">
+    <img
+      [src]="featuredImg"
+      alt="Promotions banner"
+      style="width: 100%; height: 180px; object-fit: cover; display: block;" (error)="$any($event.target).style.display='none'"
+    >
+    <div style="position: absolute; inset: 0; background: linear-gradient(to right, rgba(77,42,0,0.88), rgba(77,42,0,0.72));"></div>
+    <div style="position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 24px;">
+      <p style="font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bakery-dark); margin: 0 0 6px;">
+        Exclusive Deals
+      </p>
+      <h1 style="font-family: 'Inter', sans-serif; font-size: clamp(1.3rem, 4vw, 2rem); font-weight: 900; color: var(--bakery-card); margin: 0 0 6px; line-height: 1.15; letter-spacing: -0.02em;">
+        Save Big on Every<br>Bite
+      </h1>
+      <p style="font-family: 'Inter', sans-serif; font-size: 0.82rem; color: rgba(249, 230, 168,0.7); margin: 0;">
+        Tap <strong>Claim</strong> to save an offer to your account, then use it at checkout.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── Stats strip ─────────────────────────────────────────────────── -->
+  <div style="background: var(--bakery-burnt); display: flex; justify-content: space-around; padding: 14px 16px;">
+    <div style="text-align: center;">
+      <p style="font-family: 'Inter', sans-serif; font-weight: 900; font-size: 0.95rem; color: var(--bakery-base); margin: 0 0 2px; line-height: 1;">{{ activeCount() }}</p>
+      <p style="font-family: 'Inter', sans-serif; font-size: 0.65rem; color: rgba(249, 230, 168,0.8); margin: 0; letter-spacing: 0.03em;">Active Deals</p>
+    </div>
+    <div style="text-align: center;">
+      <p style="font-family: 'Inter', sans-serif; font-weight: 900; font-size: 0.95rem; color: var(--bakery-base); margin: 0 0 2px; line-height: 1;">Up to {{ maxDiscountPct() }}%</p>
+      <p style="font-family: 'Inter', sans-serif; font-size: 0.65rem; color: rgba(249, 230, 168,0.8); margin: 0; letter-spacing: 0.03em;">Max Discount</p>
+    </div>
+    <div style="text-align: center;">
+      <p style="font-family: 'Inter', sans-serif; font-weight: 900; font-size: 0.95rem; color: var(--bakery-base); margin: 0 0 2px; line-height: 1;">Free</p>
+      <p style="font-family: 'Inter', sans-serif; font-size: 0.65rem; color: rgba(249, 230, 168,0.8); margin: 0; letter-spacing: 0.03em;">Delivery Available</p>
+    </div>
+  </div>
+
+  <!-- ── Promo cards ─────────────────────────────────────────────────── -->
+  <div style="background: var(--bakery-card); padding: 24px 16px 40px;">
+    <p class="bakery-section-eyebrow">Claim Once, Use Any Time</p>
+    <h2 class="bakery-section-title" style="margin-bottom: 20px;">
+      Promotions &amp; Deals
+    </h2>
+
+    @if (loading()) {
+      <div style="display: flex; justify-content: center; padding: 40px 0;">
+        <ion-spinner name="crescent" color="medium"></ion-spinner>
+      </div>
+    } @else if (loadError(); as err) {
+      <div class="notice-box notice-box--error">
+        {{ err }}
+      </div>
+    } @else {
+      @if (notice(); as msg) {
+        <div class="notice-box">
+          {{ msg }}
+        </div>
+      }
+
+      @for (promo of cards(); track promo.id) {
+        <div class="promo-card">
+          <div [class]="'promo-card__accent promo-card__accent--' + promo.accent"></div>
+          <div class="promo-card__body">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+              <span class="promo-card__badge">{{ badgeFor(promo) }}</span>
+              <span style="font-family: 'Inter', sans-serif; font-size: 0.68rem; color: var(--bakery-text-muted); flex-shrink: 0;">
+                {{ expiryFor(promo) }}
+              </span>
+            </div>
+            <p class="promo-card__title">{{ promo.title }}</p>
+            <p class="promo-card__desc">{{ promo.description }}</p>
+
+            <div class="promo-card__meta">
+              <span class="promo-card__chip">{{ discountFor(promo) }}</span>
+              <span class="promo-card__chip">{{ eligibilityFor(promo) }}</span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 12px;">
+              <button
+                class="promo-card__code"
+                (click)="handleCopy(promo.code)"
+                title="Click to copy"
+                style="cursor: pointer; background: none; border: none; padding: 0;"
+              >
+                <span style="cursor: pointer;">
+                  {{ copied() === promo.code ? '✓ Copied!' : promo.code }}
+                </span>
+              </button>
+
+              @if (isClaimed(promo.id)) {
+                <ion-button
+                  size="small"
+                  disabled
+                  style="--border-radius: 10px; --background: var(--bakery-status-finished); --color: var(--bakery-dark); font-weight: 700;"
+                >
+                  ✓ Claimed
+                </ion-button>
+              } @else {
+                <ion-button
+                  size="small"
+                  (click)="handleClaim(promo)"
+                  [disabled]="isBusy(promo.id)"
+                  style="--border-radius: 10px; --background: var(--bakery-burnt); --background-activated: var(--bakery-burnt); --color: var(--bakery-dark); font-weight: 700; margin-left: auto;"
+                >
+                  {{ isBusy(promo.id) ? 'Claiming…' : 'Claim' }}
+                </ion-button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (!user()) {
+        <div style="text-align: center; padding: 8px 0 0;">
+          <p style="font-family: 'Inter', sans-serif; font-size: 0.78rem; color: var(--bakery-text-secondary); margin: 0 0 12px;">
+            You are browsing as a guest. <strong>Sign in</strong> to claim offers to your account.
+          </p>
+          <ion-button
+            routerLink="/login"
+            style="--border-radius: 10px; --background: var(--bakery-dark); --background-activated: var(--bakery-dark); --color: var(--bakery-card); font-weight: 700; font-size: 0.875rem;"
+          >
+            Sign In to Claim
+          </ion-button>
+        </div>
+      }
+    }
+  </div>
+
+  <!-- ── Newsletter CTA ──────────────────────────────────────────────── -->
+  <div style="background: var(--bakery-base); padding: 28px 24px; border-top: 1px solid var(--bakery-card-border); text-align: center;">
+    <p style="font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--bakery-dark); letter-spacing: 0.06em; text-transform: uppercase; margin: 0 0 6px;">
+      Never Miss a Deal
+    </p>
+    <h3 style="font-family: 'Inter', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--bakery-dark); margin: 0 0 14px; line-height: 1.2;">
+      Get Promos Straight<br>to Your Inbox
+    </h3>
+    <ion-button
+      routerLink="/dashboard"
+      style="--background: var(--bakery-dark); --background-activated: var(--bakery-dark); --color: var(--bakery-card); --border-radius: 10px; --padding-start: 24px; --padding-end: 24px; font-weight: 700; font-size: 0.875rem;"
+    >
+      Subscribe on Dashboard
+    </ion-button>
+  </div>
+
+</ion-content>

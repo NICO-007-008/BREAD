@@ -1,0 +1,370 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// _menu.scss — Knead to Know · Bakery App Side Menu
+// Light sidebar theme: #FFF4D6 panel, #4D2A00 text, #CC6F00 active accent
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── Menu Host Override ────────────────────────────────────────────────────────
+
+ion-menu.app-menu {
+  --width: 280px;
+  --background: var(--bakery-card);
+  --ion-background-color: var(--bakery-card);
+  border-right: 2px solid var(--bakery-dark);
+
+  &::part(backdrop) {
+    background-color: rgba(77, 42, 0, 0.45);
+  }
+
+  &::part(container) {
+    box-shadow: 6px 0 32px rgba(77, 42, 0, 0.2);
+  }
+}
+
+// ── Scrollable Content Area ───────────────────────────────────────────────────
+
+.menu-content {
+  --background: var(--bakery-card);
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+
+  font-family: var(--bakery-font);
+}
+
+// ── Brand Logo Strip ──────────────────────────────────────────────────────────
+
+.menu-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: calc(env(safe-area-inset-top, 0px) + 24px) 24px 18px;
+
+  .menu-brand-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2px solid var(--bakery-dark);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  .menu-brand-name {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--bakery-dark);
+    letter-spacing: -0.01em;
+    margin: 0;
+    line-height: 1.2;
+
+    span {
+      display: block;
+      font-size: 0.62rem;
+      font-weight: 600;
+      color: var(--bakery-text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+  }
+}
+
+// ── Divider ───────────────────────────────────────────────────────────────────
+
+.menu-divider {
+  height: 1px;
+  background-color: var(--bakery-card-border);
+  margin: 0 24px;
+}
+
+// ── Group Label (Shop / Account / Info / Admin) ───────────────────────────────
+
+.menu-section-label {
+  font-family: var(--bakery-font);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bakery-dark);
+  opacity: 0.7;
+  padding: 16px 24px 6px;
+  margin: 0;
+}
+
+// ── Navigation List ───────────────────────────────────────────────────────────
+
+.menu-nav-list {
+  padding: 4px 12px;
+  background: transparent;
+  flex: 1;
+
+  ion-list-header,
+  ion-note {
+    display: none;
+  }
+}
+
+// ── Navigation Item ───────────────────────────────────────────────────────────
+
+.menu-nav-item {
+  --background: transparent;
+  --background-hover: var(--bakery-button);
+  --background-activated: var(--bakery-button);
+  --background-focused: var(--bakery-button);
+  --color: var(--bakery-dark);
+  --padding-start: 14px;
+  --padding-end: 14px;
+  --padding-top: 11px;
+  --padding-bottom: 11px;
+  --inner-padding-end: 0;
+  --border-radius: 12px;
+  --ripple-color: rgba(204, 111, 0, 0.15);
+  --min-height: 46px;
+
+  border-radius: 12px;
+  margin-bottom: 3px;
+  transition: background var(--bakery-dur-fast) var(--bakery-ease), color var(--bakery-dur-fast) var(--bakery-ease);
+  cursor: pointer;
+
+  &:last-child { margin-bottom: 0; }
+}
+
+// ── Active State (#4D2A00 bg, #F9E6A8 text, #CC6F00 left bar) ─────────────────
+
+.menu-nav-item.active-item {
+  --background: var(--bakery-dark);
+  --color: var(--bakery-base);
+  --background-hover: var(--bakery-dark);
+  --background-activated: var(--bakery-dark);
+  position: relative;
+
+  &::part(native) {
+    position: relative;
+  }
+
+  // #CC6F00 left bar via box-shadow on the item
+  box-shadow: inset 3px 0 0 var(--bakery-burnt);
+
+  .menu-nav-icon {
+    color: var(--bakery-base);
+  }
+
+  .menu-nav-label {
+    color: var(--bakery-base);
+    font-weight: 700;
+  }
+}
+
+// ── Nav Icon ──────────────────────────────────────────────────────────────────
+
+.menu-nav-icon {
+  font-size: 20px;
+  color: var(--bakery-dark);
+  margin-inline-end: 12px;
+  flex-shrink: 0;
+  transition: color var(--bakery-dur-fast) var(--bakery-ease);
+}
+
+// ── Nav Label ─────────────────────────────────────────────────────────────────
+
+.menu-nav-label {
+  font-family: var(--bakery-font);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--bakery-dark);
+  line-height: 1.4;
+  transition: color var(--bakery-dur-fast) var(--bakery-ease);
+}
+
+// ── Footer: Log Out Section ───────────────────────────────────────────────────
+
+.menu-footer {
+  position: sticky;
+  bottom: 0;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  background: var(--bakery-card);
+  box-shadow: 0 -4px 16px rgba(77, 42, 0, 0.1);
+
+  .menu-divider {
+    margin-bottom: 8px;
+  }
+}
+
+// ── User Profile Header ──────────────────────────────────────────────────────────
+
+.menu-user-profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 20px 16px;
+  padding: 12px 16px;
+  background: var(--bakery-base);
+  border: 1px solid var(--bakery-card-border);
+  border-radius: 14px;
+  min-width: 0;
+
+  &.guest {
+    opacity: 0.6;
+  }
+}
+
+.menu-user-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid var(--bakery-dark);
+  background: var(--bakery-button);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .avatar-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    ion-icon {
+      font-size: 1.5rem;
+      color: var(--bakery-dark);
+      opacity: 0.5;
+    }
+  }
+}
+
+.menu-user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.menu-user-name {
+  font-family: var(--bakery-font);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--bakery-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.menu-user-role {
+  font-family: var(--bakery-font);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--bakery-burnt);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.menu-user-phone {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--bakery-font);
+  font-size: 0.7rem;
+  color: var(--bakery-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  ion-icon {
+    font-size: 0.85rem;
+    color: var(--bakery-burnt);
+    flex-shrink: 0;
+  }
+}
+
+.menu-footer-list {
+  padding: 8px 12px 0;
+  background: transparent;
+}
+
+// ── Log Out Item (danger button) ──────────────────────────────────────────────
+
+.menu-logout-item {
+  --background: transparent;
+  --background-hover: var(--bakery-error-bg);
+  --background-activated: var(--bakery-error-bg);
+  border: 2px solid var(--bakery-error);
+  border-radius: 12px;
+
+  &.logging-out {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .logout-icon {
+    color: var(--bakery-error);
+  }
+
+  .logout-label {
+    color: var(--bakery-error);
+    font-weight: 700;
+  }
+}
+
+// ── Hover States (non-touch) ──────────────────────────────────────────────────
+
+@media (hover: hover) {
+  .menu-nav-item:not(.active-item):hover {
+    --background: var(--bakery-button);
+
+    .menu-nav-icon { color: var(--bakery-burnt); }
+    .menu-nav-label { color: var(--bakery-dark); font-weight: 600; }
+  }
+
+  .menu-logout-item:hover {
+    --background: var(--bakery-error-bg);
+
+    .logout-icon { color: var(--bakery-error); }
+    .logout-label { color: var(--bakery-error); }
+  }
+}
+
+// ── Cart badge on menu nav item ──────────────────────────────────────────────────
+
+.menu-badge.cart-badge {
+  --background: var(--bakery-navbar);
+  --color: var(--bakery-dark);
+  animation: cart-badge-pop 0.3s var(--bakery-ease);
+}
+
+@keyframes cart-badge-pop {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+// ── Notification count badge on the menu nav item ──────────────────────────────
+
+.menu-badge {
+  --background: var(--bakery-burnt);
+  --color: #fff;
+  font-family: var(--bakery-font);
+  font-size: 0.62rem;
+  font-weight: 800;
+  min-width: 19px;
+  height: 19px;
+  line-height: 19px;
+  text-align: center;
+  border-radius: 10px;
+  padding: 0 5px;
+  margin-inline-end: 2px;
+}
