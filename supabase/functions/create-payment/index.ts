@@ -34,7 +34,7 @@ serve(async (req: Request) => {
     }
 
     const body = await req.json();
-    const { order_id, payment_method } = body;
+    const { order_id, payment_method, client } = body;
 
     if (!order_id || !payment_method) {
       return errorWithCors("Missing order_id or payment_method", 400);
@@ -98,6 +98,18 @@ serve(async (req: Request) => {
       "http://localhost:4200"
     ).replace(/\/+$/, "");
 
+    // Installed mobile app: send the customer through the payment-return
+    // function, which bounces them back into the app via a deep link
+    // (com.kneadtoknow.app://payment-return?...). Website: normal pages.
+    const isApp = client === "app";
+    const returnBase = `${supabaseUrl}/functions/v1/payment-return`;
+    const successUrl = isApp
+      ? `${returnBase}?status=success&order_id=${order_id}`
+      : `${appUrl}/payment-success?order_id=${order_id}`;
+    const cancelUrl = isApp
+      ? `${returnBase}?status=cancelled&order_id=${order_id}`
+      : `${appUrl}/payment-cancelled?order_id=${order_id}`;
+
     const shortId = String(order_id).slice(0, 8).toUpperCase();
 
     // Checkout Sessions require `line_items` (name/amount/currency/quantity);
@@ -117,8 +129,8 @@ serve(async (req: Request) => {
           payment_method_types: [payment_method],
           description: `Knead to Know Order #${shortId}`,
           reference_number: String(order_id),
-          success_url: `${appUrl}/payment-success?order_id=${order_id}`,
-          cancel_url: `${appUrl}/payment-cancelled?order_id=${order_id}`,
+          success_url: successUrl,
+          cancel_url: cancelUrl,
           metadata: {
             order_id: String(order_id),
             payment_method,

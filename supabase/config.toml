@@ -7,5 +7,10 @@ project_id = "vbrbtajunsewqysqpfck"
 [functions.paymongo-webhook]
 verify_jwt = false
 
+# payment-return only redirects the customer back into the mobile app; the
+# customer's browser has no Supabase JWT, so verification must be off.
+[functions.payment-return]
+verify_jwt = false
+
 # create-payment is called by the signed-in customer with their JWT, so it
 # keeps the default verify_jwt = true.

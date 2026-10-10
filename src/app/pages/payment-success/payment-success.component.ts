@@ -10,6 +10,7 @@ import {
   IonToolbar,
 } from '@ionic/angular';
 import { PaymentService, PaymentMethod } from '../../services/payment.service';
+import { CartService } from '../../services/cart.service';
 import { checkmarkCircleOutline, alertCircleOutline, timeOutline, arrowForwardOutline } from 'ionicons/icons';
 
 @Component({
@@ -29,6 +30,7 @@ import { checkmarkCircleOutline, alertCircleOutline, timeOutline, arrowForwardOu
 export class PaymentSuccessComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly payment = inject(PaymentService);
+  private readonly cart = inject(CartService);
 
   readonly orderId = signal<string | null>(null);
   readonly loading = signal(true);
@@ -55,12 +57,20 @@ export class PaymentSuccessComponent {
   private async checkStatus(orderId: string): Promise<void> {
     this.loading.set(true);
     try {
-      const status = await this.payment.checkPaymentStatus(orderId);
+      let status = await this.payment.checkPaymentStatus(orderId);
+      // The PayMongo webhook can arrive a few seconds after the customer
+      // returns, so re-check a few times while the payment is still pending.
+      for (let i = 0; i < 5 && status?.payment_status === 'pending'; i++) {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        status = await this.payment.checkPaymentStatus(orderId);
+      }
       if (status) {
         this.paymentMethod.set(status.payment_method as PaymentMethod);
         switch (status.payment_status) {
           case 'paid':
             this.paymentStatus.set('paid');
+            // The order is paid, so the basket is no longer needed.
+            void this.cart.clear();
             break;
           case 'pending':
             this.paymentStatus.set('pending');

@@ -57,6 +57,9 @@ supabase functions deploy paymongo-webhook --no-verify-jwt
 # (supabase/config.toml also sets verify_jwt = false for this function.
 #  PayMongo does not send a Supabase JWT, so without this the webhook gets 401.)
 
+# Mobile app only: bounces the customer back into the installed app after paying
+supabase functions deploy payment-return --no-verify-jwt
+
 # Verify deployments
 supabase functions list
 ```

@@ -365,8 +365,8 @@ export class CheckoutComponent {
       }
 
       if (paymentResult.checkout_url) {
-        // Redirect to PayMongo checkout
-        window.location.href = paymentResult.checkout_url;
+        // Open PayMongo checkout (in-app browser tab on mobile, redirect on web)
+        await this.paymentService.openCheckout(paymentResult.checkout_url);
         return;
       }
 

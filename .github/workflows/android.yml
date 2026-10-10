@@ -21,8 +21,8 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      # `npm install` (not `npm ci`) so the new @capacitor/android dependency
-      # is picked up even if package-lock.json hasn't been regenerated yet.
+      # `npm install` (not `npm ci`) so new dependencies are picked up even if
+      # package-lock.json hasn't been regenerated yet.
       - name: Install dependencies
         run: npm install
 
@@ -34,6 +34,31 @@ jobs:
       - name: Add Android platform
         run: |
           if [ ! -d android ]; then npx cap add android; fi
+
+      # Lets Android reopen the app from  com.kneadtoknow.app://payment-return
+      # links, which is how the customer returns after paying with PayMongo.
+      - name: Register payment return link in Android manifest
+        run: |
+          python3 - <<'EOF'
+          p = 'android/app/src/main/AndroidManifest.xml'
+          s = open(p, encoding='utf-8').read()
+          if 'android:scheme="com.kneadtoknow.app"' in s:
+              print('Return link already registered')
+          else:
+              filt = (
+                  '            <intent-filter>\n'
+                  '                <action android:name="android.intent.action.VIEW" />\n'
+                  '                <category android:name="android.intent.category.DEFAULT" />\n'
+                  '                <category android:name="android.intent.category.BROWSABLE" />\n'
+                  '                <data android:scheme="com.kneadtoknow.app" android:host="payment-return" />\n'
+                  '            </intent-filter>\n'
+                  '        '
+              )
+              assert '</activity>' in s, 'MainActivity block not found in AndroidManifest.xml'
+              s = s.replace('</activity>', filt + '</activity>', 1)
+              open(p, 'w', encoding='utf-8').write(s)
+              print('Return link registered')
+          EOF
 
       - name: Generate app icons and splash screens
         run: npx capacitor-assets generate --android
